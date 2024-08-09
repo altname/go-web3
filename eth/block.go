@@ -30,7 +30,7 @@ func (e *Eth) getBlock(method string, args ...interface{}) (*types.Block, error)
 
 	// Decode header and transactions.
 	var head *types.Header
-	var body rpcBlock
+	var body types.Body
 	if err := json.Unmarshal(raw, &head); err != nil {
 		return nil, err
 	}
@@ -40,10 +40,10 @@ func (e *Eth) getBlock(method string, args ...interface{}) (*types.Block, error)
 	if head == nil {
 		return nil, errors.New("json.Unmarshal header failed")
 	}
-	if head.UncleHash == types.EmptyUncleHash && len(body.UncleHashes) > 0 {
+	if head.UncleHash == types.EmptyUncleHash && len(body.Uncles) > 0 {
 		return nil, fmt.Errorf("server returned non-empty uncle list but block header indicates no uncles")
 	}
-	if head.UncleHash != types.EmptyUncleHash && len(body.UncleHashes) == 0 {
+	if head.UncleHash != types.EmptyUncleHash && len(body.Uncles) == 0 {
 		return nil, fmt.Errorf("server returned empty uncle list but block header indicates uncles")
 	}
 	if head.TxHash == types.EmptyRootHash && len(body.Transactions) > 0 {
@@ -53,7 +53,7 @@ func (e *Eth) getBlock(method string, args ...interface{}) (*types.Block, error)
 		return nil, fmt.Errorf("server returned empty transaction list but block header indicates transactions")
 	}
 	// Load uncles because they are not included in the block response.
-	var uncles []*types.Header
+	//var uncles []*types.Header
 	// TODO
 	// if len(body.UncleHashes) > 0 {
 	// 	uncles = make([]*types.Header, len(body.UncleHashes))
@@ -78,5 +78,5 @@ func (e *Eth) getBlock(method string, args ...interface{}) (*types.Block, error)
 	// 	}
 	// }
 	// Fill the sender cache of transactions in the block.
-	return types.NewBlockWithHeader(head).WithBody(body.Transactions, uncles), nil
+	return types.NewBlockWithHeader(head).WithBody(body), nil
 }
