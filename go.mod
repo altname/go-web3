@@ -3,7 +3,6 @@ module github.com/altname/go-web3
 go 1.22.5
 
 require (
-	github.com/chenzhijie/go-web3 v0.0.0-20230921142927-cd8f05f8d203
 	github.com/ethereum/go-ethereum v1.14.7
 	github.com/gorilla/websocket v1.5.3
 	github.com/valyala/fasthttp v1.55.0
